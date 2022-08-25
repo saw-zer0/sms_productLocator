@@ -15,7 +15,6 @@ export default function UserDashboard() {
             </Button>
           </Grid>
           <Grid item xs={3}>
-            <SearchBar/>
           </Grid>
       </Grid>
       <UserList/>

@@ -4,12 +4,13 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Button, IconButton } from '@mui/material';
+import { Button, IconButton, Grid, Card } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useNavigate} from 'react-router-dom'
 import { useDispatch } from 'react-redux/es/exports';
 import productApi from '../reducers/productsApi'
 import { setProducts } from '../reducers/productsSlice';
+import ProductCard from './card';
 
 
 const products = [
@@ -46,10 +47,11 @@ export default function ProductList(props) {
   const handleEdit = (product) => {
     navigate(`/edit_product/${product._id}`, {replace: true, state: {...product, editMode:true}})
   }
-
   return (
+    
     <div>
-        {productList.map((product, index) => (
+      {productList.length !==0 ?
+        (productList.map((product, index) => (
             <Accordion key={index}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -59,10 +61,10 @@ export default function ProductList(props) {
               <Typography>{product.name}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                malesuada lacus ex, sit amet blandit leo lobortis eget.
-              </Typography>
+              <Grid>
+
+              </Grid>
+              <ProductCard product={product}/>
               <IconButton aria-label="delete" color='error' 
                 onClick={()=>(handleDeleteProduct(product._id))}
               >
@@ -75,7 +77,11 @@ export default function ProductList(props) {
                >Edit</Button> */}
             </AccordionDetails>
           </Accordion>
-        ))}
+        ))):
+        (<Card>
+          <Typography variant="h5">Products Not Found</Typography>
+        </Card> )
+              }
     </div>
-  )
+  ) 
 }
