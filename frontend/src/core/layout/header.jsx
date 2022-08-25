@@ -8,11 +8,12 @@ import IconButton from '@mui/material/IconButton';
 import HomeIcon from '@mui/icons-material/Home'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = () => {
     const location = useLocation()
     const navigate = useNavigate()
-    const [loggedIn, setLoggedIn] = useState(false)
+    const loggedIn = useSelector(state=> state.auth.loggedIn)
     return (
         <div>
             <Box sx={{ flexGrow: 1 }}>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Button, TextField, Select, InputLabel, MenuItem, Box,  } from '@mui/material'
+import { Button, TextField, Select, InputLabel, MenuItem, Box, Snackbar, IconButton  } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close';
 
 import productApi from "../reducers/productsApi";
 
@@ -15,8 +16,8 @@ export default function ProductForm(props) {
     })
     )
 
-    const [postProduct] = productApi.usePostProductMutation();
-
+    const [postProduct] = productApi.usePostProductMutation()
+    const [succed, setSucced] = useState(false)
     const changeFormValues = (field, value) => {
         setFormValues(state=> ({...state, [field]:value}))
     }
@@ -33,12 +34,46 @@ export default function ProductForm(props) {
             row:data.get("rowNum")
         }
         console.log(productPostBody)
-        await postProduct(productPostBody);
+        try{
+            await postProduct(productPostBody);
+            setSucced(true)
+            handleClick()
+        }catch(err){
+            setSucced(false)
+            handleClick()
+        }
     }
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+      setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpen(false);
+      };
+    
+      const action = (
+        <React.Fragment>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+      );
 
     return(
         <Box>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ m: 1 }}>
             <TextField 
                 name="productName"
                 id="productName" 
@@ -48,6 +83,7 @@ export default function ProductForm(props) {
                 onChange={(e) => {
                     changeFormValues("productName", e.target.value);
                 }}
+                sx={{ m: 1 }}
             />
             <TextField 
                 name="description"
@@ -58,7 +94,9 @@ export default function ProductForm(props) {
                 onChange={(e) => {
                     changeFormValues("description", e.target.value);
                 }}
+                sx={{ m: 1 }}
             />
+            <Box>
             <TextField 
                 name="tags"
                 id="tags" 
@@ -68,12 +106,15 @@ export default function ProductForm(props) {
                 onChange={(e) => {
                     changeFormValues("tag", e.target.value);
                 }}
+                sx={{ m: 1 }}
             />
             <Button
                 variant='outlined'
                 // onClick={()=>addTag()}
+                sx={{ m: 1 }}
             >+ tags
             </Button>
+            </Box>
             <TextField
                 name="isleNum"
                 type="number"
@@ -83,6 +124,7 @@ export default function ProductForm(props) {
                 onChange={(e) => {
                     changeFormValues("isleNum", e.target.value);
                 }}
+                sx={{ m: 1 }}
             />
             <InputLabel id="side">Side</InputLabel>
             <Select
@@ -92,6 +134,7 @@ export default function ProductForm(props) {
                 value={formValues.side}
                 label="Side"
                 onChange={e=>changeFormValues("side", e.target.value)}
+                sx={{ m: 1 }}
             >
                 <MenuItem value={"RIGHT"}>Right</MenuItem>
                 <MenuItem value={"LEFT"}>Left</MenuItem>
@@ -105,13 +148,22 @@ export default function ProductForm(props) {
                 onChange={(e) => {
                     changeFormValues("row", e.target.value);
                 }}
+                sx={{ m: 1 }}
             />
+            <br/>
             <Button
                 variant="contained"
                 type="submit"
+                sx={{ m: 1 }}
             >Add Product</Button>
         </Box>
-        
+        <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={succed?"Added":"Failed to Add"}
+        action={action}
+      />
         </Box>
     )
 }
