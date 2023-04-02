@@ -1,6 +1,8 @@
 const router = require('express').Router()
 
+const passport = require('passport')
 const { createProduct, listProducts, deleteProduct, searchProduct } = require('../controllers/product.controller')
+const { createUser, login, listAllUsers } = require('../controllers/user.controller')
 
 router.get('/', (req, res) => {
     return res.status(200).json({
@@ -10,26 +12,58 @@ router.get('/', (req, res) => {
     })
 })
 
+
 router
     .route('/users')
-    .get()
-    .post()
-    .put()
-    .delete()
+    .get(
+        passport.authenticate('jwt', {session: false}),
+        listAllUsers
+    )
+
 
 router
-    .route('/login')
-    .post()
+    .route('/users/login')
+    .post(
+        passport.authenticate('local-login', { session: false }),
+        login
+    )
+
 
 router
-    .route('/logout')
+    .route('/users/signup')
+    .post(
+        passport.authenticate('local-signup', { session: false }),
+        createUser 
+    )
+
+router
+    .route('/users/validate_token')
+    .get(
+        passport.authenticate('jwt', { session: false }),
+        (req, res)=>{
+            res.json({
+                tokenStatus: "valid"
+            })
+        })
+
+router
+    .route('/users/logout')
+    
 
 router.route('/products')
-    .get(listProducts)
-    .post(createProduct)
+    .get(
+        listProducts
+    )
+    .post(
+        passport.authenticate("jwt", { session: false }),
+        createProduct
+        )
 
 router.route('/products/:id')
-    .delete(deleteProduct)
+    .delete(
+        passport.authenticate("jwt", { session: false }),
+        deleteProduct
+    )
 
 router.route('/products/search')
     .get(searchProduct)

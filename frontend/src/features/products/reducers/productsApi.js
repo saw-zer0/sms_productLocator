@@ -3,11 +3,13 @@ import {createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const productApi = createApi({
     reducerPath: 'productApi',
     baseQuery: fetchBaseQuery({baseUrl: `http://localhost:8080/products`}),
+    
     endpoints: (builder) => ({
         fetchProducts: builder.mutation({
             query: () => {
                 return {
                     url: '',
+                   
                     method: 'GET',
                 }
             }
@@ -25,6 +27,9 @@ const productApi = createApi({
                 return {
                     url: '',
                     method: "POST",
+                    headers: {
+                        authorization: sessionStorage.getItem("token")
+                    },
                     body
                 }
             }
@@ -33,6 +38,9 @@ const productApi = createApi({
             query: (productId) => {
                 return {
                     url: `/${productId}`,
+                    headers: {
+                        authorization: sessionStorage.getItem("token")
+                    },
                     method: "DELETE",
                 }
             }

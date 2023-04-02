@@ -8,13 +8,18 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import { Alert, AlertTitle } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
-import { setLoggedIn } from '../reducers/authSlice';
+import { setLoggedIn, setToken } from '../reducers/authSlice';
 import { useNavigate } from 'react-router-dom';
+
+import userApi from '../reducers/authApi';
+import productApi from '../../products/reducers/productsApi';
+import { useState } from 'react';
 
 
 export const defaultUsers = [
@@ -42,26 +47,38 @@ const theme = createTheme();
 export default function Login() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const handleSubmit = (event) => {
+  const [isToastOpen, setIsToastOpen] = useState(false)
+
+  const [userLogin] = userApi.useUserLoginMutation()
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password")
-    const authorize = defaultUsers.some(user => {
-      console.log(user)
-      return(email===user.email && password===user.password)
-    })
-    console.log(authorize)
-    if(authorize){
-      dispatch(setLoggedIn(true))
+    try{
+      const {data, error} = await userLogin({
+        email,
+        password,
+      })
+      console.log(data)
+      if(error)throw error
+      sessionStorage.setItem("token", data.token)
+      dispatch(setToken(data))
       navigate("/dashboard",{replace: true})
-    }else{
-      dispatch(setLoggedIn(false))
+    }catch(err){
+      navigate("/login",{replace: true})
+      setIsToastOpen(true)
+      setTimeout(()=> setIsToastOpen(false), 4000)
     }
   };
 
   return (
       <Container component="main" maxWidth="xs">
+        {isToastOpen &&
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          This is an error alert — <strong>check it out!</strong>
+        </Alert>}
         <CssBaseline />
         <Box
           sx={{

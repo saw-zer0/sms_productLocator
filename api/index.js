@@ -8,6 +8,7 @@ const cors = require('cors')
 const {assertDatabaseConnection} = require('./db')
 const indexRouter = require('./routes')
 const { errorHandler } = require('./helpers/errorHandler')
+const passport = require('./config/passportConfig')
 
 // app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}))

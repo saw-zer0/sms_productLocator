@@ -6,16 +6,34 @@ import {privateRoutes, publicRoutes} from './routes/main.routes';
 import NoRoutes from './core/layout/noRoutes';
 import Header from './core/layout/header';
 import { Container } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoggedIn, setToken } from './features/auth/reducers/authSlice';
+import userApi from './features/auth/reducers/authApi';
 
 const ProtectedRoutes = ({children, props}) => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const loggedIn = useSelector(state=> state.auth.loggedIn)
+  const [validateToken] = userApi.useValidateTokenMutation()
   useEffect(()=>{
-    if(!loggedIn){
-      navigate("/")
-      return
+    const token = sessionStorage.getItem("token")
+    const checkValidity = async() => {
+      try{
+        const validity = await validateToken(token)
+        console.log(validity)
+        if(validity.data.tokenStatus === "valid"){
+          dispatch(setLoggedIn(true))
+          dispatch(setToken("token"))
+          navigate("/dashboard")
+        }else{
+          navigate("/")
+        }
+      }catch(error){
+        navigate("/")
+      }
     }
+    checkValidity()
+    return
   }, []
   )
   return (

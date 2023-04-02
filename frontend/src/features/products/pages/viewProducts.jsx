@@ -29,7 +29,7 @@ const ViewProducts = () => {
     return (
         <>
             <SearchBar 
-            handleSearch={handleSearch}
+                handleSearch={handleSearch}
             />
             <ProductList
                 productList={productList}
