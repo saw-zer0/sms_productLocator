@@ -37,7 +37,6 @@ passport.use(
            passwordField: "password",
         },
         async (email, password, done) => {
-            console.log(email, password)
             try {
                 const user = await User.findOne({ email: email });
                if (!user) return done(null, false);
@@ -67,5 +66,30 @@ passport.use(new JwtStrategy(
             }
         })
     );
+
+    passport.use(
+        "seed",
+        new LocalStrategy(
+            {
+                usernameField: 'email',
+                passwordField: "password"
+            },
+            async (email, password,done) => {
+                
+                try {
+                    const userExists = await User.findOne({ email })
+                    if (userExists) {
+                        return done(null, false)
+                    }
+                    // Create a new user with the user data provided
+                    const user = await User.create({ email, password })
+                    return done(null, user)
+                } catch (error) {
+                    done(error)
+                }
+            }
+            )
+            )
+    
      
 module.exports = passport

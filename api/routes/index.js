@@ -35,6 +35,18 @@ router
         passport.authenticate('local-signup', { session: false }),
         createUser 
     )
+router
+    .route('/users/seed')
+    .get(
+        (req, res, next)=>{
+            const email = "admin@admin.com"
+            const password = "password123"
+            req.body = {email, password}
+            next()
+        },
+        passport.authenticate('seed'),
+        (req, res)=>res.json({message: "success"})
+    )
 
 router
     .route('/users/validate_token')
