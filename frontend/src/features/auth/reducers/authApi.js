@@ -55,6 +55,9 @@ const userApi = createApi({
         userDelete: builder.mutation({
             query: (userId) => {
                 return {
+                    headers: {
+                        authorization: sessionStorage.getItem("token")
+                    },
                     url: `/${userId}`,
                     method: "DELETE",
                 }

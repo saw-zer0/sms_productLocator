@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, TextField, Select, InputLabel, MenuItem, Box, Snackbar, IconButton  } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
 import userApi from '../../auth/reducers/authApi';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserForm(props) {
     const [formValues, setFormValues] = useState(()=>({
@@ -10,7 +11,7 @@ export default function UserForm(props) {
         "admin": "",
     })
     )
-
+    const navigate = useNavigate()
     const [postUser] = userApi.usePostUserMutation()
     const [succed, setSucced] = useState(false)
     const changeFormValues = (field, value) => {
@@ -30,6 +31,13 @@ export default function UserForm(props) {
             await postUser(userPostBody);
             setSucced(true)
             handleClick()
+            setFormValues(state=> ({
+                ...state,
+                "email": "",
+                "password": "",
+                "admin": "",
+                })
+            )
         }catch(err){
             setSucced(false)
             handleClick()
@@ -110,12 +118,12 @@ export default function UserForm(props) {
             >Add User</Button>
         </Box>
         <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message={succed?"Added":"Failed to Add"}
-        action={action}
-      />
-        </Box>
+            open={open}
+            autoHideDuration={6000}
+            onClose={handleClose}
+            message={succed?"User added successfully":"Failed to Add"}
+            action={action}
+        />
+    </Box>
     )
 }

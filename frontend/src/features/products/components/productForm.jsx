@@ -38,6 +38,16 @@ export default function ProductForm(props) {
             await postProduct(productPostBody);
             setSucced(true)
             handleClick()
+            setFormValues(state=>({
+                ...state,
+                "productName": "",
+                "description": "",
+                "categories": "",
+                "tag": "",
+                "isleNum": "",
+                "side": "",
+                "row": "",
+            }))
         }catch(err){
             setSucced(false)
             handleClick()

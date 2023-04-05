@@ -30,6 +30,7 @@ const ViewProducts = () => {
         <>
             <SearchBar 
                 handleSearch={handleSearch}
+                
             />
             <ProductList
                 productList={productList}

@@ -24,12 +24,25 @@ exports.createUser = async(req, res, next) => {
     res.json(req.user)
 }
 
-exports.updateUser = (req, res, next) => {
 
-}
-
-exports.deleteUser = (req, res, next) => {
-
+exports.deleteUser = async(req, res, next) => {
+    try{
+        const {params} = req
+        console.log(params)
+        const result = await userModel.findByIdAndDelete(params.id)
+        console.log(result)
+        if(result) {
+            res.status(200).json({
+                message: "User Successfully deleted",
+                ...result
+            })
+        }else{
+            next(new ErrorResponse(404, "User not found"))
+        }
+    }catch(err){
+        console.log(err)
+        next(new ErrorResponse(400, err.message, err))
+    }
 }
 
 exports.login = (req, res, next) => {

@@ -61,6 +61,11 @@ const SearchBar = (props) => {
   
   return(
     <Search>
+      <Box
+        sx={{
+          my: 3,
+        }}
+      >
         <SearchIconWrapper>
             <SearchIcon />
         </SearchIconWrapper>
@@ -69,6 +74,7 @@ const SearchBar = (props) => {
             inputProps={{ 'aria-label': 'search' }}
             onChange={(e)=> handleChange(e.target.value)}
         />
+      </Box>
   </Search>
   )
 }

@@ -2,7 +2,7 @@ const router = require('express').Router()
 
 const passport = require('passport')
 const { createProduct, listProducts, deleteProduct, searchProduct } = require('../controllers/product.controller')
-const { createUser, login, listAllUsers } = require('../controllers/user.controller')
+const { createUser, login, listAllUsers, deleteUser } = require('../controllers/user.controller')
 
 router.get('/', (req, res) => {
     return res.status(200).json({
@@ -18,6 +18,12 @@ router
     .get(
         passport.authenticate('jwt', {session: false}),
         listAllUsers
+    )
+router
+    .route('/users/:id')
+    .delete(
+        passport.authenticate('jwt', {session: false}),
+        deleteUser
     )
 
 
